@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUMEN — Modern Essentials</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --paper:#faf8f5; --paper-soft:#f1ece3; --ink:#111111;
+  --muted:#7a746b; --gold:#b8875a; --gold-deep:#111111;
+  --line: rgba(17,17,17,0.1);
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ background:var(--paper); color:var(--ink); font-family:'Plus Jakarta Sans',sans-serif; }
+h1,h2,h3{ font-family:'Fraunces',serif; font-weight:400; letter-spacing:-0.01em; }
+.wrap{ max-width:1200px; margin:0 auto; padding:0 6%; }
+
+/* ===== NAV ===== */
+nav{ position:sticky; top:0; z-index:50; display:flex; justify-content:space-between; align-items:center; padding:24px 6%; background:rgba(250,248,245,0.9); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); }
+.logo{ font-family:'Fraunces',serif; font-size:22px; letter-spacing:-0.02em; }
+.cart-toggle{ position:relative; background:none; border:none; cursor:pointer; }
+.cart-toggle svg{ width:24px; height:24px; stroke:var(--ink); }
+.cart-count{ position:absolute; top:-8px; right:-8px; background:var(--gold); color:#fff; font-size:10px; font-weight:700; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+
+/* ===== HERO ===== */
+.hero{ text-align:center; padding:100px 6% 70px; }
+.hero h1{ font-size:clamp(38px,6vw,64px); margin-bottom:16px; }
+.hero p{ color:var(--muted); max-width:460px; margin:0 auto; font-size:15px; line-height:1.7; }
+
+/* ===== PRODUCT GRID ===== */
+.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:34px; padding:60px 0 120px; }
+.product-card{ background:var(--paper-soft); border-radius:10px; overflow:hidden; transition:transform 0.4s ease; }
+.product-card:hover{ transform:translateY(-6px); }
+.product-image{ aspect-ratio:1/1; overflow:hidden; background:#e6e0d5; }
+.product-image img{ width:100%; height:100%; object-fit:cover; }
+.product-info{ padding:20px; }
+.product-info h3{ font-size:17px; margin-bottom:6px; }
+.product-info .price{ color:var(--muted); font-size:14px; margin-bottom:16px; }
+.product-info .price strong{ color:var(--ink); font-size:16px; margin-right:8px; }
+
+/* ===== LIQUID FILL BUTTON ===== */
+.btn-fill{ position:relative; display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:13px 20px; border-radius:100px; border:none; cursor:pointer; overflow:hidden; isolation:isolate; background:var(--gold); transition:transform 0.3s ease; }
+.btn-fill:hover{ transform:translateY(-2px); }
+.btn-fill .fill{ position:absolute; inset:-3px; border-radius:inherit; background:var(--gold-deep); clip-path:circle(0% at var(--x,50%) var(--y,50%)); transition:clip-path 0.55s cubic-bezier(0.22,1,0.36,1); z-index:1; }
+.btn-fill:hover .fill{ clip-path:circle(200% at var(--x,50%) var(--y,50%)); }
+.btn-fill span{ position:relative; z-index:2; color:#fff; font-weight:700; font-size:13px; transition:color 0.4s ease; }
+
+/* ===== CART DRAWER ===== */
+.cart-overlay{ position:fixed; inset:0; background:rgba(17,17,17,0.4); opacity:0; pointer-events:none; transition:opacity 0.4s ease; z-index:90; }
+.cart-overlay.active{ opacity:1; pointer-events:auto; }
+.cart-drawer{ position:fixed; top:0; right:-420px; width:400px; max-width:90vw; height:100%; background:var(--paper); z-index:100; transition:right 0.45s cubic-bezier(0.22,1,0.36,1); display:flex; flex-direction:column; }
+.cart-drawer.active{ right:0; }
+.cart-header{ display:flex; justify-content:space-between; align-items:center; padding:24px; border-bottom:1px solid var(--line); }
+.cart-header button{ background:none; border:none; font-size:22px; cursor:pointer; }
+.cart-items{ flex:1; overflow-y:auto; padding:20px 24px; }
+.cart-item{ display:flex; gap:14px; margin-bottom:20px; align-items:center; }
+.cart-item img{ width:60px; height:60px; object-fit:cover; border-radius:6px; }
+.cart-item-info{ flex:1; }
+.cart-item-info h4{ font-size:14px; font-weight:600; margin-bottom:4px; }
+.qty-row{ display:flex; align-items:center; gap:10px; margin-top:6px; }
+.qty-row button{ width:22px; height:22px; border:1px solid var(--line); background:none; border-radius:50%; cursor:pointer; }
+.remove-btn{ background:none; border:none; color:var(--muted); font-size:12px; text-decoration:underline; cursor:pointer; margin-top:6px; }
+.cart-footer{ padding:24px; border-top:1px solid var(--line); }
+.cart-total{ display:flex; justify-content:space-between; font-weight:700; margin-bottom:16px; }
+.empty-cart{ color:var(--muted); font-size:14px; text-align:center; padding:60px 0; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">LUMEN</div>
+  <button class="cart-toggle" id="cartToggle">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+    <span class="cart-count" id="cartCount">0</span>
+  </button>
+</nav>
+
+<section class="hero">
+  <h1>Modern essentials,<br>made to last.</h1>
+  <p>Considered pieces, honestly priced. No noise — just things worth owning.</p>
+</section>
+
+<div class="wrap">
+  <div class="grid" id="productGrid">
+    <p style="grid-column:1/-1; text-align:center; color:var(--muted);">Loading products…</p>
+  </div>
+</div>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-header"><h3>Your Cart</h3><button id="closeCart">×</button></div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total"><span>Total</span><span id="cartTotal">₹0</span></div>
+    <button class="btn-fill" id="checkoutBtn"><span class="fill"></span><span>Checkout via WhatsApp</span></button>
+  </div>
+</div>
+
+<script>
+/* ====== CONFIG ====== */
+const SUPABASE_URL = 'https://vkrayufkmcsbruoaakqp.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrcmF5dWZrbWNzYnJ1b2Fha3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4ODAxNzMsImV4cCI6MjA5OTQ1NjE3M30.0i4p5zv-Nvs0bHmQP0x2sjsPPQOCfkblo4E5Bl2a5xs';
+const WHATSAPP_NUMBER = '917727852619'; // replace with your business WhatsApp number
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let products = [];
+let cart = JSON.parse(localStorage.getItem('lumen-cart') || '[]');
+
+/* ====== FETCH & RENDER PRODUCTS ====== */
+async function loadProducts(){
+  const { data, error } = await sb.from('products').select('*').order('created_at', { ascending:false });
+  const grid = document.getElementById('productGrid');
+  if(error || !data || data.length === 0){
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted);">No products yet. Check back soon.</p>';
+    return;
+  }
+  products = data;
+  grid.innerHTML = data.map(p => `
+    <div class="product-card">
+      <div class="product-image"><img src="${p.image_url || ''}" alt="${p.name}"></div>
+      <div class="product-info">
+        <h3>${p.name}</h3>
+        <div class="price"><strong>₹${p.price}</strong>${p.compare_price ? `<s>₹${p.compare_price}</s>` : ''}</div>
+        <button class="btn-fill add-btn" data-id="${p.id}"><span class="fill"></span><span>Add to cart</span></button>
+      </div>
+    </div>
+  `).join('');
+  attachAddButtons();
+}
+
+function attachAddButtons(){
+  document.querySelectorAll('.add-btn').forEach(btn=>{
+    btn.addEventListener('mouseenter', setFillOrigin);
+    btn.addEventListener('click', ()=>{
+      const product = products.find(p => p.id === btn.dataset.id);
+      addToCart(product);
+    });
+  });
+}
+
+/* ====== CART LOGIC ====== */
+function addToCart(product){
+  const existing = cart.find(i => i.id === product.id);
+  if(existing) existing.qty += 1;
+  else cart.push({ id:product.id, name:product.name, price:product.price, image_url:product.image_url, qty:1 });
+  saveCart();
+  openCart();
+}
+function changeQty(id, delta){
+  const item = cart.find(i => i.id === id);
+  if(!item) return;
+  item.qty += delta;
+  if(item.qty <= 0) cart = cart.filter(i => i.id !== id);
+  saveCart();
+}
+function removeItem(id){
+  cart = cart.filter(i => i.id !== id);
+  saveCart();
+}
+function saveCart(){
+  localStorage.setItem('lumen-cart', JSON.stringify(cart));
+  renderCart();
+}
+function renderCart(){
+  const itemsEl = document.getElementById('cartItems');
+  const totalEl = document.getElementById('cartTotal');
+  const countEl = document.getElementById('cartCount');
+  const totalQty = cart.reduce((s,i)=>s+i.qty,0);
+  countEl.textContent = totalQty;
+
+  if(cart.length === 0){
+    itemsEl.innerHTML = '<p class="empty-cart">Your cart is empty.</p>';
+    totalEl.textContent = '₹0';
+    return;
+  }
+  itemsEl.innerHTML = cart.map(i => `
+    <div class="cart-item">
+      <img src="${i.image_url || ''}" alt="${i.name}">
+      <div class="cart-item-info">
+        <h4>${i.name}</h4>
+        <div>₹${i.price} × ${i.qty}</div>
+        <div class="qty-row">
+          <button onclick="changeQty('${i.id}',-1)">−</button>
+          <span>${i.qty}</span>
+          <button onclick="changeQty('${i.id}',1)">+</button>
+        </div>
+        <button class="remove-btn" onclick="removeItem('${i.id}')">Remove</button>
+      </div>
+    </div>
+  `).join('');
+  const total = cart.reduce((s,i)=>s + i.price*i.qty, 0);
+  totalEl.textContent = '₹' + total;
+}
+
+/* ====== CART DRAWER OPEN/CLOSE ====== */
+const cartDrawer = document.getElementById('cartDrawer');
+const cartOverlay = document.getElementById('cartOverlay');
+function openCart(){ cartDrawer.classList.add('active'); cartOverlay.classList.add('active'); }
+function closeCart(){ cartDrawer.classList.remove('active'); cartOverlay.classList.remove('active'); }
+document.getElementById('cartToggle').addEventListener('click', openCart);
+document.getElementById('closeCart').addEventListener('click', closeCart);
+cartOverlay.addEventListener('click', closeCart);
+
+/* ====== CHECKOUT -> WHATSAPP ====== */
+document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+  if(cart.length === 0) return alert('Your cart is empty.');
+  let msg = `Hi! I'd like to order:%0A%0A`;
+  cart.forEach(i => { msg += `• ${i.name} × ${i.qty} — ₹${i.price*i.qty}%0A`; });
+  const total = cart.reduce((s,i)=>s + i.price*i.qty, 0);
+  msg += `%0ATotal: ₹${total}`;
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
+});
+
+/* ====== LIQUID FILL — cursor-origin reveal ====== */
+function setFillOrigin(e){
+  const r = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty('--x', ((e.clientX-r.left)/r.width)*100+'%');
+  e.currentTarget.style.setProperty('--y', ((e.clientY-r.top)/r.height)*100+'%');
+}
+document.getElementById('checkoutBtn').addEventListener('mouseenter', setFillOrigin);
+
+/* ====== INIT ====== */
+renderCart();
+loadProducts();
+</script>
+
+</body>
+</html>
