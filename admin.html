@@ -14,7 +14,6 @@ body{ background:var(--paper); color:var(--ink); font-family:'Plus Jakarta Sans'
 h1,h2,h3{ font-family:'Fraunces',serif; font-weight:400; }
 .wrap{ max-width:1000px; margin:0 auto; padding:60px 6% 120px; }
 
-/* ===== LOGIN ===== */
 #loginScreen{ min-height:100vh; display:flex; align-items:center; justify-content:center; }
 .login-box{ background:var(--paper-soft); padding:48px; border-radius:10px; width:340px; }
 .login-box h2{ margin-bottom:24px; font-size:26px; }
@@ -23,28 +22,39 @@ h1,h2,h3{ font-family:'Fraunces',serif; font-weight:400; }
 .field input:focus{ border-color:var(--gold); }
 .error-msg{ color:#c0392b; font-size:13px; margin-bottom:14px; display:none; }
 
-/* ===== DASHBOARD ===== */
 #dashboard{ display:none; }
 .top-bar{ display:flex; justify-content:space-between; align-items:center; margin-bottom:50px; }
 .logout-btn{ background:none; border:1px solid var(--line); padding:10px 18px; border-radius:100px; cursor:pointer; font-size:13px; }
+.tabs{ display:flex; gap:10px; margin-bottom:40px; }
+.tab-btn{ padding:10px 20px; border-radius:100px; border:1px solid var(--line); background:var(--paper-soft); font-size:13px; font-weight:600; cursor:pointer; }
+.tab-btn.active{ background:var(--gold-deep); color:#fff; border-color:var(--gold-deep); }
+.tab-panel{ display:none; }
+.tab-panel.active{ display:block; }
 
 .upload-panel{ background:var(--paper-soft); padding:36px; border-radius:10px; margin-bottom:60px; }
 .upload-panel h3{ font-size:22px; margin-bottom:24px; }
 .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
 .form-grid .full{ grid-column:1/-1; }
 .field label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.05em; }
-.field input, .field textarea{ width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:6px; background:#fff; font-size:14px; outline:none; font-family:inherit; }
+.field input, .field select, .field textarea{ width:100%; padding:12px 14px; border:1px solid var(--line); border-radius:6px; background:#fff; font-size:14px; outline:none; font-family:inherit; }
 .field textarea{ resize:vertical; min-height:70px; }
-.field input:focus, .field textarea:focus{ border-color:var(--gold); }
+.field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--gold); }
 .checkbox-row{ display:flex; align-items:center; gap:8px; }
+.cat-row{ display:flex; gap:8px; }
+.cat-row select{ flex:1; }
+.cat-row button{ padding:0 16px; border-radius:6px; border:1px solid var(--line); background:#fff; cursor:pointer; font-size:13px; }
 
-/* ===== LIQUID FILL BUTTON ===== */
+.img-manager{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+.img-thumb{ position:relative; width:70px; height:70px; }
+.img-thumb img{ width:100%; height:100%; object-fit:cover; border-radius:6px; }
+.img-thumb button{ position:absolute; top:-6px; right:-6px; width:20px; height:20px; border-radius:50%; background:#c0392b; color:#fff; border:none; font-size:12px; cursor:pointer; }
+
 .btn-fill{ position:relative; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:14px 30px; border-radius:100px; border:none; cursor:pointer; overflow:hidden; isolation:isolate; background:var(--gold); margin-top:20px; }
+.btn-fill:disabled{ opacity:0.5; pointer-events:none; }
 .btn-fill .fill{ position:absolute; inset:-3px; border-radius:inherit; background:var(--gold-deep); clip-path:circle(0% at var(--x,50%) var(--y,50%)); transition:clip-path 0.55s cubic-bezier(0.22,1,0.36,1); z-index:1; }
 .btn-fill:hover .fill{ clip-path:circle(200% at var(--x,50%) var(--y,50%)); }
 .btn-fill span{ position:relative; z-index:2; color:#fff; font-weight:700; font-size:14px; }
 
-/* ===== PRODUCT LIST ===== */
 .list-item{ display:flex; align-items:center; gap:18px; padding:18px 0; border-top:1px solid var(--line); }
 .list-item img{ width:56px; height:56px; object-fit:cover; border-radius:6px; background:#eee; }
 .list-item-info{ flex:1; }
@@ -56,7 +66,6 @@ h1,h2,h3{ font-family:'Fraunces',serif; font-weight:400; }
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-box">
     <h2>Admin Login</h2>
@@ -67,7 +76,6 @@ h1,h2,h3{ font-family:'Fraunces',serif; font-weight:400; }
   </div>
 </div>
 
-<!-- DASHBOARD -->
 <div id="dashboard">
   <div class="wrap">
     <div class="top-bar">
@@ -75,31 +83,52 @@ h1,h2,h3{ font-family:'Fraunces',serif; font-weight:400; }
       <button class="logout-btn" id="logoutBtn">Log out</button>
     </div>
 
-    <div class="upload-panel">
-      <h3 id="formTitle">Add a new product</h3>
-      <form id="productForm">
-        <input type="hidden" id="editId">
-        <div class="form-grid">
-          <div class="field"><label>Product name</label><input type="text" id="pName" required></div>
-          <div class="field"><label>Category</label><input type="text" id="pCategory" placeholder="e.g. Bags"></div>
-          <div class="field"><label>Price (₹)</label><input type="number" id="pPrice" required></div>
-          <div class="field"><label>Compare-at price (optional)</label><input type="number" id="pComparePrice"></div>
-          <div class="field"><label>Stock</label><input type="number" id="pStock" value="1"></div>
-          <div class="field"><label>Product image</label><input type="file" id="pImage" accept="image/*"></div>
-          <div class="field full"><label>Description</label><textarea id="pDescription"></textarea></div>
-          <div class="field checkbox-row full"><input type="checkbox" id="pFeatured"><label style="margin:0;">Feature this product</label></div>
-        </div>
-        <button type="submit" class="btn-fill" id="submitBtn"><span class="fill"></span><span>Add product</span></button>
-      </form>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="products">Products</button>
+      <button class="tab-btn" data-tab="reviews">Reviews</button>
     </div>
 
-    <h3>Existing products</h3>
-    <div id="productList"></div>
+    <!-- PRODUCTS TAB -->
+    <div class="tab-panel active" id="tab-products">
+      <div class="upload-panel">
+        <h3 id="formTitle">Add a new product</h3>
+        <form id="productForm">
+          <input type="hidden" id="editId">
+          <div class="form-grid">
+            <div class="field"><label>Product name</label><input type="text" id="pName" required></div>
+            <div class="field">
+              <label>Category</label>
+              <div class="cat-row">
+                <select id="pCategory"><option value="">No category</option></select>
+                <button type="button" id="addCategoryBtn">+ New</button>
+              </div>
+            </div>
+            <div class="field"><label>Price (₹)</label><input type="number" id="pPrice" required></div>
+            <div class="field"><label>Compare-at price (optional)</label><input type="number" id="pComparePrice"></div>
+            <div class="field"><label>Stock</label><input type="number" id="pStock" value="1"></div>
+            <div class="field"><label>Add images (multiple allowed)</label><input type="file" id="pImages" accept="image/*" multiple></div>
+            <div class="field full"><label>Description</label><textarea id="pDescription"></textarea></div>
+            <div class="field checkbox-row full"><input type="checkbox" id="pFeatured"><label style="margin:0;">Feature this product</label></div>
+          </div>
+          <div class="img-manager" id="imageManager"></div>
+          <button type="submit" class="btn-fill" id="submitBtn"><span class="fill"></span><span>Add product</span></button>
+          <button type="button" class="btn-fill" id="cancelEditBtn" style="display:none;background:#999;"><span>Cancel edit</span></button>
+        </form>
+      </div>
+
+      <h3>Existing products</h3>
+      <div id="productList"></div>
+    </div>
+
+    <!-- REVIEWS TAB -->
+    <div class="tab-panel" id="tab-reviews">
+      <h3>All Reviews</h3>
+      <div id="reviewsPanel"></div>
+    </div>
   </div>
 </div>
 
 <script>
-/* ====== CONFIG ====== */
 const SUPABASE_URL = 'https://vkrayufkmcsbruoaakqp.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrcmF5dWZrbWNzYnJ1b2Fha3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4ODAxNzMsImV4cCI6MjA5OTQ1NjE3M30.0i4p5zv-Nvs0bHmQP0x2sjsPPQOCfkblo4E5Bl2a5xs';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -113,8 +142,10 @@ async function checkSession(){
   if(session){ showDashboard(); } else { showLogin(); }
 }
 function showLogin(){ loginScreen.style.display='flex'; dashboard.style.display='none'; }
-function showDashboard(){ loginScreen.style.display='none'; dashboard.style.display='block'; loadProducts(); }
-
+function showDashboard(){
+  loginScreen.style.display='none'; dashboard.style.display='block';
+  loadCategoryOptions(); loadProducts(); loadReviewsPanel();
+}
 document.getElementById('loginBtn').addEventListener('click', async (e)=>{
   e.preventDefault();
   const email = document.getElementById('loginEmail').value;
@@ -123,74 +154,133 @@ document.getElementById('loginBtn').addEventListener('click', async (e)=>{
   if(error){ document.getElementById('loginError').style.display='block'; }
   else { checkSession(); }
 });
+document.getElementById('logoutBtn').addEventListener('click', async ()=>{ await sb.auth.signOut(); showLogin(); });
 
-document.getElementById('logoutBtn').addEventListener('click', async ()=>{
-  await sb.auth.signOut();
-  showLogin();
+/* ====== TABS ====== */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+  });
 });
 
-/* ====== ADD / UPDATE PRODUCT ====== */
+/* ====== CATEGORIES ====== */
+async function loadCategoryOptions(){
+  const { data } = await sb.from('categories').select('*').order('name');
+  const select = document.getElementById('pCategory');
+  select.innerHTML = '<option value="">No category</option>' + (data||[]).map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+}
+document.getElementById('addCategoryBtn').addEventListener('click', async ()=>{
+  const name = prompt('New category name:');
+  if(!name) return;
+  const { error } = await sb.from('categories').insert({ name });
+  if(error) return alert('Error: '+error.message);
+  await loadCategoryOptions();
+});
+
+/* ====== PRODUCT FORM ====== */
 document.getElementById('productForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
   const editId = document.getElementById('editId').value;
   const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
   submitBtn.querySelector('span:last-child').textContent = 'Saving...';
-
-  let imageUrl = null;
-  const file = document.getElementById('pImage').files[0];
-  if(file){
-    const filePath = `${Date.now()}-${file.name}`;
-    const { error: uploadError } = await sb.storage.from('product-images').upload(filePath, file);
-    if(uploadError){ alert('Image upload failed: ' + uploadError.message); return; }
-    const { data: publicUrlData } = sb.storage.from('product-images').getPublicUrl(filePath);
-    imageUrl = publicUrlData.publicUrl;
-  }
 
   const payload = {
     name: document.getElementById('pName').value,
-    category: document.getElementById('pCategory').value,
+    category_id: document.getElementById('pCategory').value || null,
     price: parseFloat(document.getElementById('pPrice').value),
     compare_price: document.getElementById('pComparePrice').value ? parseFloat(document.getElementById('pComparePrice').value) : null,
     stock: parseInt(document.getElementById('pStock').value) || 0,
     description: document.getElementById('pDescription').value,
     featured: document.getElementById('pFeatured').checked
   };
-  if(imageUrl) payload.image_url = imageUrl;
 
+  let productId = editId;
   let error;
+
   if(editId){
     ({ error } = await sb.from('products').update(payload).eq('id', editId));
   } else {
-    if(!imageUrl){ alert('Please select an image.'); submitBtn.querySelector('span:last-child').textContent = 'Add product'; return; }
-    ({ error } = await sb.from('products').insert(payload));
+    const { data, error: insertError } = await sb.from('products').insert(payload).select().single();
+    error = insertError;
+    if(data) productId = data.id;
   }
 
-  if(error){ alert('Error: ' + error.message); }
-  else { resetForm(); loadProducts(); }
-  submitBtn.querySelector('span:last-child').textContent = editId ? 'Update product' : 'Add product';
+  if(error){ alert('Error: '+error.message); resetSubmitBtn(editId); return; }
+
+  const files = document.getElementById('pImages').files;
+  if(files.length > 0){
+    const { data: existingImages } = await sb.from('product_images').select('sort_order').eq('product_id', productId).order('sort_order', { ascending:false }).limit(1);
+    let nextOrder = existingImages && existingImages.length ? existingImages[0].sort_order + 1 : 0;
+    let firstUploadedUrl = null;
+
+    for(const file of files){
+      const filePath = `${productId}/${Date.now()}-${file.name}`;
+      const { error: uploadErr } = await sb.storage.from('product-images').upload(filePath, file);
+      if(uploadErr){ console.error(uploadErr); continue; }
+      const { data: urlData } = sb.storage.from('product-images').getPublicUrl(filePath);
+      await sb.from('product_images').insert({ product_id: productId, image_url: urlData.publicUrl, sort_order: nextOrder });
+      if(!firstUploadedUrl) firstUploadedUrl = urlData.publicUrl;
+      nextOrder++;
+    }
+    if(firstUploadedUrl && !editId){
+      await sb.from('products').update({ image_url: firstUploadedUrl }).eq('id', productId);
+    }
+  }
+
+  resetForm();
+  loadProducts();
 });
 
+function resetSubmitBtn(editId){
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = false;
+  submitBtn.querySelector('span:last-child').textContent = editId ? 'Update product' : 'Add product';
+}
 function resetForm(){
   document.getElementById('productForm').reset();
   document.getElementById('editId').value = '';
   document.getElementById('formTitle').textContent = 'Add a new product';
-  document.getElementById('submitBtn').querySelector('span:last-child').textContent = 'Add product';
+  document.getElementById('cancelEditBtn').style.display = 'none';
+  document.getElementById('imageManager').innerHTML = '';
+  resetSubmitBtn('');
+}
+document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
+
+/* ====== IMAGE MANAGER (edit mode) ====== */
+async function loadImageManager(productId){
+  const container = document.getElementById('imageManager');
+  const { data } = await sb.from('product_images').select('*').eq('product_id', productId).order('sort_order');
+  if(!data || data.length===0){ container.innerHTML = '<p style="color:var(--muted);font-size:13px;">No images yet.</p>'; return; }
+  container.innerHTML = data.map(img=>`
+    <div class="img-thumb">
+      <img src="${img.image_url}">
+      <button onclick="deleteProductImage('${img.id}','${img.image_url}','${productId}')">×</button>
+    </div>
+  `).join('');
+}
+async function deleteProductImage(imageId, imageUrl, productId){
+  if(!confirm('Remove this image?')) return;
+  await sb.from('product_images').delete().eq('id', imageId);
+  const path = imageUrl.split('/product-images/')[1];
+  if(path) await sb.storage.from('product-images').remove([path]);
+  loadImageManager(productId);
 }
 
-/* ====== LOAD / RENDER PRODUCT LIST ====== */
+/* ====== PRODUCT LIST ====== */
 async function loadProducts(){
-  const { data, error } = await sb.from('products').select('*').order('created_at', { ascending:false });
+  const { data, error } = await sb.from('products').select('*, categories(name)').order('created_at', { ascending:false });
   const list = document.getElementById('productList');
-  if(error || !data || data.length === 0){
-    list.innerHTML = '<p style="color:var(--muted);padding-top:20px;">No products yet.</p>';
-    return;
-  }
+  if(error || !data || data.length === 0){ list.innerHTML = '<p style="color:var(--muted);padding-top:20px;">No products yet.</p>'; return; }
   list.innerHTML = data.map(p => `
     <div class="list-item">
       <img src="${p.image_url || ''}">
       <div class="list-item-info">
         <h4>${p.name}</h4>
-        <span>₹${p.price} · Stock: ${p.stock}</span>
+        <span>₹${p.price} · Stock: ${p.stock} ${p.categories ? '· '+p.categories.name : ''}</span>
       </div>
       <div class="list-actions">
         <button onclick='editProduct(${JSON.stringify(p).replace(/'/g,"&#39;")})'>Edit</button>
@@ -199,21 +289,21 @@ async function loadProducts(){
     </div>
   `).join('');
 }
-
 function editProduct(p){
   document.getElementById('editId').value = p.id;
   document.getElementById('pName').value = p.name;
-  document.getElementById('pCategory').value = p.category || '';
+  document.getElementById('pCategory').value = p.category_id || '';
   document.getElementById('pPrice').value = p.price;
   document.getElementById('pComparePrice').value = p.compare_price || '';
   document.getElementById('pStock').value = p.stock;
   document.getElementById('pDescription').value = p.description || '';
   document.getElementById('pFeatured').checked = p.featured;
   document.getElementById('formTitle').textContent = 'Edit product';
+  document.getElementById('cancelEditBtn').style.display = 'inline-flex';
   document.getElementById('submitBtn').querySelector('span:last-child').textContent = 'Update product';
-  window.scrollTo({ top:0, behavior:'smooth' });
+  loadImageManager(p.id);
+  window.scrollTo({top:0, behavior:'smooth'});
 }
-
 async function deleteProduct(id){
   if(!confirm('Delete this product?')) return;
   const { error } = await sb.from('products').delete().eq('id', id);
@@ -221,7 +311,28 @@ async function deleteProduct(id){
   else loadProducts();
 }
 
-/* ====== LIQUID FILL ORIGIN TRACKING ====== */
+/* ====== REVIEWS MODERATION ====== */
+async function loadReviewsPanel(){
+  const { data } = await sb.from('reviews').select('*, products(name)').order('created_at', {ascending:false});
+  const container = document.getElementById('reviewsPanel');
+  if(!data || data.length===0){ container.innerHTML='<p style="color:var(--muted);">No reviews yet.</p>'; return; }
+  container.innerHTML = data.map(r=>`
+    <div class="list-item">
+      <div class="list-item-info">
+        <h4>${r.products?.name || 'Unknown product'} — ${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</h4>
+        <span>${r.reviewer_name}: ${r.comment || '(no comment)'}</span>
+      </div>
+      <div class="list-actions"><button class="delete-btn" onclick="deleteReview('${r.id}')">Delete</button></div>
+    </div>
+  `).join('');
+}
+async function deleteReview(id){
+  if(!confirm('Delete this review?')) return;
+  await sb.from('reviews').delete().eq('id', id);
+  loadReviewsPanel();
+}
+
+/* ====== BUTTON FILL ORIGIN ====== */
 document.querySelectorAll('.btn-fill').forEach(btn=>{
   btn.addEventListener('mouseenter', e=>{
     const r = btn.getBoundingClientRect();
