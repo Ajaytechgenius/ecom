@@ -19,11 +19,11 @@ h1,h2,h3{ font-family:'Fraunces',serif; font-weight:400; letter-spacing:-0.01em;
 
 /* ===== NAV ===== */
 nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:24px; padding:20px 6%; background:rgba(250,248,245,0.92); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
-.logo{ font-family:'Fraunces',serif; font-size:22px; letter-spacing:-0.02em; flex-shrink:0; }
+.logo{ font-family:'Fraunces',serif; font-size:22px; letter-spacing:-0.02em; flex-shrink:0; text-decoration:none; color:var(--ink); }
 .search-input{ flex:1; max-width:420px; padding:11px 18px; border-radius:100px; border:1px solid var(--line); background:#fff; font-size:13px; outline:none; transition:border-color 0.3s ease; }
 .search-input:focus{ border-color:var(--gold); }
-.nav-icons{ display:flex; gap:14px; margin-left:auto; }
-.icon-btn{ position:relative; background:none; border:none; cursor:pointer; padding:6px; }
+.nav-icons{ display:flex; gap:14px; margin-left:auto; align-items:center; }
+.icon-btn{ position:relative; background:none; border:none; cursor:pointer; padding:6px; text-decoration:none; display:flex; }
 .icon-btn svg{ width:22px; height:22px; stroke:var(--ink); fill:none; }
 .icon-count{ position:absolute; top:-4px; right:-4px; background:var(--gold-deep); color:#fff; font-size:10px; font-weight:700; width:17px; height:17px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
 
@@ -50,7 +50,7 @@ nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:2
 .skeleton-line{ height:12px; margin:16px; border-radius:4px; background:linear-gradient(90deg,#ece6da 25%,#f5f1e8 37%,#ece6da 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite; }
 
 /* ===== PRODUCT GRID ===== */
-.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:30px; padding-bottom:100px; }
+.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:30px; padding-bottom:60px; }
 @keyframes cardIn{ from{opacity:0; transform:translateY(24px);} to{opacity:1; transform:translateY(0);} }
 .product-card{ background:var(--paper-soft); border-radius:10px; overflow:hidden; transition:transform 0.4s ease, box-shadow 0.4s ease; animation:cardIn 0.6s cubic-bezier(0.22,1,0.36,1) backwards; }
 .product-card:hover{ transform:translateY(-6px); box-shadow:0 20px 40px rgba(17,17,17,0.08); }
@@ -75,6 +75,9 @@ nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:2
 .count-text{ color:var(--muted); font-size:12px; }
 .price{ color:var(--muted); font-size:14px; margin-bottom:16px; }
 .price strong{ color:var(--ink); font-size:16px; margin-right:8px; }
+
+/* ===== RECENTLY VIEWED ===== */
+.section-heading{ margin:20px 0 20px; font-size:24px; }
 
 /* ===== LIQUID FILL BUTTON ===== */
 .btn-fill{ position:relative; display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:13px 20px; border-radius:100px; border:none; cursor:pointer; overflow:hidden; isolation:isolate; background:var(--gold); transition:transform 0.3s ease; }
@@ -105,6 +108,14 @@ nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:2
 .drawer-footer{ padding:24px; border-top:1px solid var(--line); }
 .cart-total{ display:flex; justify-content:space-between; font-weight:700; margin-bottom:16px; }
 .empty-cart{ color:var(--muted); font-size:14px; text-align:center; padding:60px 0; }
+
+.coupon-row{ display:flex; gap:8px; margin-bottom:14px; }
+.coupon-row input{ flex:1; padding:11px 14px; border:1px solid var(--line); border-radius:6px; font-size:13px; outline:none; }
+.coupon-row input:focus{ border-color:var(--gold); }
+.coupon-row button{ padding:0 16px; border-radius:6px; border:1px solid var(--line); background:#fff; cursor:pointer; font-size:13px; font-weight:600; }
+.applied-coupon{ font-size:12px; color:var(--gold-deep); margin-bottom:10px; font-weight:600; }
+.place-order-btn{ margin-bottom:10px; }
+.whatsapp-btn{ background:#25a85c; }
 
 /* ===== PRODUCT MODAL ===== */
 .modal-overlay{ position:fixed; inset:0; background:rgba(17,17,17,0.55); opacity:0; pointer-events:none; transition:opacity 0.35s ease; z-index:200; }
@@ -146,6 +157,9 @@ nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:2
 .related-section h3{ font-size:20px; margin-bottom:20px; }
 .related-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
 
+/* ===== TOAST ===== */
+#toastEl{ position:fixed; top:24px; right:24px; background:#111; color:#fff; padding:16px 22px; border-radius:8px; font-size:14px; z-index:400; transform:translateX(140%); transition:transform 0.4s cubic-bezier(0.22,1,0.36,1); max-width:300px; }
+
 @media (max-width:760px){
   .modal-grid{ grid-template-columns:1fr; padding:50px 24px 20px; }
   .reviews-section, .related-section{ padding:0 24px 40px; }
@@ -157,9 +171,12 @@ nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:2
 <body>
 
 <nav>
-  <div class="logo">LUMEN</div>
+  <a href="shop.html" class="logo">LUMEN</a>
   <input type="text" class="search-input" id="searchInput" placeholder="Search products...">
   <div class="nav-icons">
+    <a href="account.html" class="icon-btn" title="My Account">
+      <svg viewBox="0 0 24 24" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
     <button class="icon-btn" id="wishToggle">
       <svg viewBox="0 0 24 24" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
       <span class="icon-count" id="wishCount">0</span>
@@ -188,10 +205,11 @@ nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:2
     </select>
   </div>
 
-  <div class="grid" id="skeletonGrid">
-    ${Array(8).fill('<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line" style="width:60%"></div></div>').join ? '' : ''}
-  </div>
+  <div class="grid" id="skeletonGrid"></div>
   <div class="grid" id="productGrid"></div>
+
+  <h3 class="section-heading" id="recentHeading" style="display:none;">Recently viewed</h3>
+  <div class="grid" id="recentGrid"></div>
 </div>
 
 <!-- CART DRAWER -->
@@ -200,8 +218,14 @@ nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:2
   <div class="drawer-header"><h3>Your Cart</h3><button id="closeCart">×</button></div>
   <div class="drawer-items" id="cartItems"></div>
   <div class="drawer-footer">
+    <div class="coupon-row">
+      <input type="text" id="couponInput" placeholder="Coupon code">
+      <button id="applyCouponBtn">Apply</button>
+    </div>
+    <div class="applied-coupon" id="appliedCouponNote"></div>
     <div class="cart-total"><span>Total</span><span id="cartTotal">₹0</span></div>
-    <button class="btn-fill" id="checkoutBtn"><span class="fill"></span><span>Checkout via WhatsApp</span></button>
+    <button class="btn-fill place-order-btn" id="placeOrderBtn"><span class="fill"></span><span>Place Order</span></button>
+    <button class="btn-fill whatsapp-btn" id="checkoutBtn"><span class="fill"></span><span>Or checkout via WhatsApp</span></button>
   </div>
 </div>
 
@@ -263,11 +287,13 @@ nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:2
   </div>
 </div>
 
+<div id="toastEl"></div>
+
 <script>
 /* ====== CONFIG ====== */
 const SUPABASE_URL = 'https://vkrayufkmcsbruoaakqp.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrcmF5dWZrbWNzYnJ1b2Fha3FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4ODAxNzMsImV4cCI6MjA5OTQ1NjE3M30.0i4p5zv-Nvs0bHmQP0x2sjsPPQOCfkblo4E5Bl2a5xs';
-const WHATSAPP_NUMBER = '917727852619'; // replace with your store's number
+const WHATSAPP_NUMBER = '917727852619'; // replace with your store's WhatsApp number
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -278,11 +304,21 @@ let searchQuery = '';
 let sortMode = 'newest';
 let cart = JSON.parse(localStorage.getItem('lumen-cart') || '[]');
 let wishlist = JSON.parse(localStorage.getItem('lumen-wishlist') || '[]');
+let appliedCoupon = null;
 
 /* Build skeleton loader */
 document.getElementById('skeletonGrid').innerHTML = Array(8).fill(`
   <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-line"></div><div class="skeleton-line" style="width:60%"></div></div>
 `).join('');
+
+/* ====== TOAST ====== */
+function showToast(msg, duration=3000){
+  const toast = document.getElementById('toastEl');
+  toast.textContent = msg;
+  toast.style.transform = 'translateX(0)';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=> toast.style.transform='translateX(140%)', duration);
+}
 
 /* ====== HELPERS ====== */
 function bindFillButtons(scope=document){
@@ -341,6 +377,7 @@ async function loadProducts(){
   if(error){ console.error(error); document.getElementById('productGrid').innerHTML = '<p style="grid-column:1/-1;color:var(--muted);">Failed to load products.</p>'; return; }
   products = data || [];
   applyFiltersAndRender();
+  renderRecentlyViewed();
 }
 
 /* ====== FILTER / SORT / RENDER ====== */
@@ -425,6 +462,21 @@ document.getElementById('sortSelect').addEventListener('change', e=>{
   applyFiltersAndRender();
 });
 
+/* ====== RECENTLY VIEWED ====== */
+function renderRecentlyViewed(){
+  const ids = JSON.parse(localStorage.getItem('lumen-recent') || '[]');
+  const items = ids.map(id => products.find(p=>p.id===id)).filter(Boolean);
+  const grid = document.getElementById('recentGrid');
+  const heading = document.getElementById('recentHeading');
+  if(items.length === 0){ heading.style.display='none'; grid.innerHTML=''; return; }
+  heading.style.display = 'block';
+  grid.innerHTML = items.map((p,i)=>createProductCard(p,i)).join('');
+  grid.querySelectorAll('.add-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> addToCart(products.find(p=>p.id===btn.dataset.id),1));
+  });
+  bindFillButtons(grid);
+}
+
 /* ====== WISHLIST ====== */
 function toggleWishlist(id){
   if(wishlist.includes(id)) wishlist = wishlist.filter(w=>w!==id);
@@ -432,6 +484,7 @@ function toggleWishlist(id){
   localStorage.setItem('lumen-wishlist', JSON.stringify(wishlist));
   document.getElementById('wishCount').textContent = wishlist.length;
   applyFiltersAndRender();
+  renderRecentlyViewed();
 }
 function renderWishlistDrawer(){
   const items = products.filter(p=>wishlist.includes(p.id));
@@ -480,11 +533,20 @@ function saveCart(){
   localStorage.setItem('lumen-cart', JSON.stringify(cart));
   renderCart();
 }
+function getCartSubtotal(){ return cart.reduce((s,i)=>s + i.price*i.qty, 0); }
+function getCartDiscount(){ return appliedCoupon ? Math.round(getCartSubtotal() * appliedCoupon.discount_percent/100) : 0; }
+function getCartTotal(){ return getCartSubtotal() - getCartDiscount(); }
+
 function renderCart(){
   const itemsEl = document.getElementById('cartItems');
   const totalEl = document.getElementById('cartTotal');
   document.getElementById('cartCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
-  if(cart.length === 0){ itemsEl.innerHTML = '<p class="empty-cart">Your cart is empty.</p>'; totalEl.textContent = '₹0'; return; }
+  if(cart.length === 0){
+    itemsEl.innerHTML = '<p class="empty-cart">Your cart is empty.</p>';
+    totalEl.textContent = '₹0';
+    document.getElementById('appliedCouponNote').textContent = '';
+    return;
+  }
   itemsEl.innerHTML = cart.map(i => `
     <div class="cart-item">
       <img src="${i.image_url || ''}" alt="${i.name}">
@@ -498,8 +560,10 @@ function renderCart(){
       </div>
     </div>
   `).join('');
-  totalEl.textContent = '₹' + cart.reduce((s,i)=>s + i.price*i.qty, 0);
+  totalEl.textContent = '₹' + getCartTotal();
+  document.getElementById('appliedCouponNote').textContent = appliedCoupon ? `Coupon "${appliedCoupon.code}" applied — ${appliedCoupon.discount_percent}% off` : '';
 }
+
 const cartDrawer = document.getElementById('cartDrawer');
 const cartOverlay = document.getElementById('cartOverlay');
 function openCart(){ cartDrawer.classList.add('active'); cartOverlay.classList.add('active'); }
@@ -507,12 +571,72 @@ function closeCart(){ cartDrawer.classList.remove('active'); cartOverlay.classLi
 document.getElementById('cartToggle').addEventListener('click', openCart);
 document.getElementById('closeCart').addEventListener('click', closeCart);
 cartOverlay.addEventListener('click', closeCart);
+
+/* WhatsApp-only checkout (no DB order) */
 document.getElementById('checkoutBtn').addEventListener('click', ()=>{
-  if(cart.length === 0) return alert('Your cart is empty.');
+  if(cart.length === 0) return showToast('Your cart is empty.');
   let msg = `Hi! I'd like to order:%0A%0A`;
   cart.forEach(i => { msg += `• ${i.name} × ${i.qty} — ₹${i.price*i.qty}%0A`; });
-  msg += `%0ATotal: ₹${cart.reduce((s,i)=>s + i.price*i.qty, 0)}`;
+  if(appliedCoupon) msg += `%0ACoupon: ${appliedCoupon.code} (-${appliedCoupon.discount_percent}%)%0A`;
+  msg += `%0ATotal: ₹${getCartTotal()}`;
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
+});
+
+/* ====== COUPON ====== */
+document.getElementById('applyCouponBtn').addEventListener('click', async ()=>{
+  const code = document.getElementById('couponInput').value.trim();
+  if(!code) return;
+  const { data } = await sb.from('coupons').select('*').eq('code', code.toUpperCase()).eq('active', true).maybeSingle();
+  if(!data){ showToast('Invalid or expired coupon code.'); appliedCoupon = null; renderCart(); return; }
+  appliedCoupon = data;
+  showToast(`Coupon applied: ${data.discount_percent}% off`);
+  renderCart();
+});
+
+/* ====== PLACE REAL ORDER (saved to Supabase) ====== */
+document.getElementById('placeOrderBtn').addEventListener('click', async ()=>{
+  if(cart.length === 0) return showToast('Your cart is empty.');
+
+  const { data: { session } } = await sb.auth.getSession();
+  const subtotal = getCartSubtotal();
+  const discount = getCartDiscount();
+  const total = getCartTotal();
+
+  let orderPayload = { subtotal, discount, total, coupon_code: appliedCoupon?.code || null };
+
+  if(session){
+    orderPayload.user_id = session.user.id;
+  } else {
+    const name = prompt('Your name for this order:');
+    if(!name) return showToast('Order cancelled.');
+    const phone = prompt('Phone number:');
+    if(!phone) return showToast('Order cancelled.');
+    const address = prompt('Delivery address:');
+    if(!address) return showToast('Order cancelled.');
+    orderPayload.guest_name = name;
+    orderPayload.guest_phone = phone;
+    orderPayload.address_text = address;
+  }
+
+  const { data: order, error } = await sb.from('orders').insert(orderPayload).select().single();
+  if(error){ console.error(error); return showToast('Something went wrong placing your order.'); }
+
+  const items = cart.map(i => ({ order_id: order.id, product_id: i.id, product_name: i.name, price: i.price, qty: i.qty }));
+  const { error: itemsError } = await sb.from('order_items').insert(items);
+  if(itemsError) console.error(itemsError);
+
+  // also notify via WhatsApp so the store owner sees it immediately
+  let msg = `New order placed! ID: ${order.id.slice(0,8).toUpperCase()}%0A%0A`;
+  cart.forEach(i => { msg += `• ${i.name} × ${i.qty} — ₹${i.price*i.qty}%0A`; });
+  if(appliedCoupon) msg += `%0ACoupon: ${appliedCoupon.code}%0A`;
+  msg += `%0ATotal: ₹${total}`;
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank');
+
+  cart = [];
+  appliedCoupon = null;
+  saveCart();
+  closeCart();
+  showToast(`Order placed! ID: ${order.id.slice(0,8).toUpperCase()}`, 5000);
 });
 
 /* ====== PRODUCT MODAL ====== */
@@ -527,6 +651,12 @@ function openProductModal(id){
   currentModalProduct = product;
   currentModalQty = 1;
   currentGalleryImages = getProductImages(product);
+
+  /* track recently viewed */
+  let recentlyViewed = JSON.parse(localStorage.getItem('lumen-recent') || '[]');
+  recentlyViewed = [id, ...recentlyViewed.filter(x=>x!==id)].slice(0,8);
+  localStorage.setItem('lumen-recent', JSON.stringify(recentlyViewed));
+
   const { avg, count } = computeRating(product);
   const discount = product.compare_price && product.compare_price>product.price
     ? Math.round((product.compare_price-product.price)/product.compare_price*100) : 0;
@@ -558,6 +688,7 @@ function openProductModal(id){
 function closeProductModal(){
   document.getElementById('modalOverlay').classList.remove('active');
   document.getElementById('productModal').classList.remove('active');
+  renderRecentlyViewed();
 }
 document.getElementById('modalCloseBtn').addEventListener('click', closeProductModal);
 document.getElementById('modalOverlay').addEventListener('click', closeProductModal);
@@ -609,7 +740,7 @@ document.querySelectorAll('#starSelect span').forEach(star=>{
 });
 document.getElementById('reviewForm').addEventListener('submit', async (e)=>{
   e.preventDefault();
-  if(selectedReviewRating===0) return alert('Please select a star rating.');
+  if(selectedReviewRating===0) return showToast('Please select a star rating.');
   const productId = document.getElementById('reviewProductId').value;
   const name = document.getElementById('reviewerName').value.trim();
   const comment = document.getElementById('reviewComment').value.trim();
@@ -618,7 +749,7 @@ document.getElementById('reviewForm').addEventListener('submit', async (e)=>{
 
   const { data, error } = await sb.from('reviews').insert({ product_id: productId, reviewer_name: name, rating: selectedReviewRating, comment }).select();
 
-  if(error){ alert('Error: '+error.message); submitBtn.querySelector('span:last-child').textContent='Submit review'; return; }
+  if(error){ showToast('Error submitting review.'); submitBtn.querySelector('span:last-child').textContent='Submit review'; return; }
 
   const product = products.find(p=>p.id===productId);
   product.reviews = product.reviews || [];
@@ -626,6 +757,7 @@ document.getElementById('reviewForm').addEventListener('submit', async (e)=>{
   renderModalReviews(product);
   applyFiltersAndRender();
   submitBtn.querySelector('span:last-child').textContent = 'Submit review';
+  showToast('Review submitted — thank you!');
 });
 
 /* ====== RELATED PRODUCTS ====== */
